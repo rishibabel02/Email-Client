@@ -11,7 +11,7 @@ datasource db {
 }
 
 model User{
-    id String @id // @default(cuid())  // cuid will generate a unique identifier
+    id String @id  @default(cuid())  // cuid will generate a unique identifier
     emailAddress String @unique
     firstName String
     lastName String
@@ -20,7 +20,7 @@ model User{
 }
 
 model Account{
-    id String @id // @default(cuid())  // this is the id from aurinko 
+    id String @id  @default(cuid())  // this is the id from aurinko 
     userId String // this is the id from prisma i.e. of the actual user
 
     accessToken String @unique
