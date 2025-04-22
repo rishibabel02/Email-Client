@@ -1,6 +1,7 @@
 'use client'
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { getAurinkoAuthUrl } from '@/lib/aurinko'
 import { cn } from '@/lib/utils'
 import { api } from '@/trpc/react'
 import { Plus } from 'lucide-react'
@@ -41,13 +42,17 @@ const AccountSwitcher = ({isCollapsed}: Props) => {
             {
                 data.map((account) => {
                     return (
-                        <SelectItem key={account.id} value= {account.id}>
+                        <SelectItem key={account.id} value= {account.id} className='cursor-pointer'>
                             {account.emailAddress}
                         </SelectItem>
                     )
                 })}
 
-                <div>
+                <div onClick={async () =>{
+                    const authurl = await getAurinkoAuthUrl('Google')
+                    window.location.href = authurl
+
+                }} className='items-center flex relative cursor-pointer hover:bg-gray-50 w-full rounded-sm py-1.5 pl-2 px-8 text-sm outline-none focus:bg-accent'>
                     <Plus className='size-4 mr-1'/>
                     Add Account
                 </div>

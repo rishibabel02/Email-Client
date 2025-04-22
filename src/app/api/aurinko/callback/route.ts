@@ -108,7 +108,7 @@ export const GET = async (req: NextRequest) => {
     },
   });
 
-  console.log("✅ User ensured in DB:", dbUser);
+  // console.log("✅ User ensured in DB:", dbUser);
   
   const params = req.nextUrl.searchParams;
   const status = params.get("status");

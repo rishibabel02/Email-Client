@@ -13,7 +13,7 @@ export class Account {
             headers : {
                 Authorization : `Bearer ${this.token}`
             },params : { 
-                daysWithin : 2,
+                daysWithin : 10,
                 bodytypo : "html"
             }
         })

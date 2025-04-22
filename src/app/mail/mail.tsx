@@ -7,6 +7,10 @@ import { cn } from '@/lib/utils'
 import { Separator } from '@/components/ui/separator'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import AccountSwitcher from './account-switcher'
+import Sidebar from '@/app/mail/sidebar'
+import ThreadsList from './threads-list'
+import ThreadDisplay from './thread-display'
+
 
 type Props = {
   defaultLayout : number[] | undefined,
@@ -40,7 +44,7 @@ const mail = ({defaultLayout = [20,32,48], navCollapsedSize,defaultCollapsed}: P
                     </div>
                     <Separator />
                     {/* Side bar */}
-                    SideBar
+                    <Sidebar isCollapsed={isCollapsed}/>
                     <div className='flex-1'></div>
                     {/* AI */}
                     Ask AI
@@ -65,16 +69,16 @@ const mail = ({defaultLayout = [20,32,48], navCollapsedSize,defaultCollapsed}: P
             {/* Search Bar */}
             Search Bar
             <TabsContent value='inbox'> 
-                Inbox
+                <ThreadsList/>
             </TabsContent>
             <TabsContent value='done'> 
-                Done 
+                 <ThreadsList/>  
             </TabsContent>
             </Tabs>
         </ResizablePanel>
         <ResizableHandle withHandle />
         <ResizablePanel defaultSize={defaultLayout[2]} minSize={30}>
-            Thread Display
+            <ThreadDisplay/>
         </ResizablePanel>
         </ResizablePanelGroup>
     </TooltipProvider>

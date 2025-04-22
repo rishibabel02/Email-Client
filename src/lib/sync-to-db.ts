@@ -6,7 +6,7 @@ import pLimit from 'p-limit'; // this will limit the number of concurrent reques
 export async function syncEmailsToDatabase(emails : EmailMessage[], accountId : string) {
     console.log("Attempt to sync emails ", emails.length)
 
-    const limit = pLimit(5); // limit the number of concurrent requests to 10 req per batch
+    const limit = pLimit(5); // limit the number of concurrent requests to 5 req per batch
     try{
         for(const email of emails){
             await upsertEmail(email, accountId, emails.indexOf(email))
@@ -94,7 +94,8 @@ async function upsertEmail(email : EmailMessage, accountId : string, index : num
                 ])]
             }
         });
-
+        
+        console.log(`[${email.id}] body length: ${email.body?.length}, snippet length: ${email.bodySnippet?.length}`)
         // upsert email
         await db.email.upsert({
             where: { id: email.id },
