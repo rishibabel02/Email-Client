@@ -9,6 +9,7 @@ import {
   ClerkProvider
 } from '@clerk/nextjs'
 import { ThemeProvider } from "@/components/theme-provider";
+import KBar from "@/components/kbar";
 
 export const metadata: Metadata = {
   title: "Create T3 App",
@@ -25,19 +26,23 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" className={`${geist.variable}`}>
-          <body>
+    <html lang="en" className={geist.variable}>
+      <body>
+        <ClerkProvider>
           <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-            <TRPCReactProvider>{children}</TRPCReactProvider>
-            </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <TRPCReactProvider>
+              <KBar>
+                {children}
+              </KBar>
+            </TRPCReactProvider>
+          </ThemeProvider>
+        </ClerkProvider>
+      </body>
+    </html>
   );
 }

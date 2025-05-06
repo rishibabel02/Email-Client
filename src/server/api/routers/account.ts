@@ -2,6 +2,7 @@ import { z } from "zod";
 import { createTRPCRouter, privateprocedure } from "../trpc";
 import { db } from "@/server/db";
 import type { Prisma } from "@prisma/client";
+import { Inclusive_Sans } from "next/font/google";
 
 export const authoriseAccountAccess = async (accountId: string, userId: string) => {
     
@@ -92,7 +93,63 @@ export const accountRouter = createTRPCRouter({
                 lastMessageDate : 'desc'
             }
         })
-    })
+       
+    }),
 
+
+    getSuggestions: privateprocedure.input(z.object({
+        accountId : z.string(),
+    })).query(async ({ctx,input}) =>{
+        const account = await authoriseAccountAccess(input.accountId, ctx.auth.userId)
+        return await ctx.db.emailAddress.findMany({
+            where:{
+                accountId : account.id
+            },
+            select:{
+                address : true,
+                name : true
+            }
+        })
+    }),
+
+    getReplyDetails : privateprocedure.input(z.object({
+        accountId : z.string(),
+        threadId : z.string()
+    })).query(async ({ctx,input}) => {
+        const account = await authoriseAccountAccess(input.accountId, ctx.auth.userId)
+        const thread = await ctx.db.thread.findFirst({
+            where:{
+                id : input.threadId
+            },
+            include:{
+                emails:{
+                    orderBy:{
+                        sentAt : 'asc'
+                    },
+                    select:{
+                        from : true,
+                        to : true,
+                        cc : true,
+                        bcc : true,
+                        subject : true,
+                        sentAt : true,
+                        internetMessageId : true,
+                    }
+                }
+            }
+        })
+        if(!thread || thread.emails.length === 0) throw new Error("Thread not found")
+
+            const lastExternalEmail = thread.emails.reverse().find((email) => email.from.address !== account.emailAddress)
+            if(!lastExternalEmail) throw new Error("No external email found")
+
+            return{
+                subject: lastExternalEmail.subject,
+                to: [lastExternalEmail.from , ...lastExternalEmail.to.filter((email) => email.address !== account.emailAddress)],
+                cc : lastExternalEmail.cc.filter((cc) => cc.address!== account.emailAddress),
+                from : {name : account.name, address : account.emailAddress},
+                id: lastExternalEmail.internetMessageId
+            }
+    })
 
 })

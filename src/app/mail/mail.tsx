@@ -47,7 +47,7 @@ const mail = ({defaultLayout = [20,32,48], navCollapsedSize,defaultCollapsed}: P
                     <Sidebar isCollapsed={isCollapsed}/>
                     <div className='flex-1'></div>
                     {/* AI */}
-                    Ask AI
+                         Ask AI
                 </div>
         </ResizablePanel>
         <ResizableHandle withHandle />
