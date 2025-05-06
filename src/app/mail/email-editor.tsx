@@ -56,13 +56,19 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
         },
     })
 
+    const onGenerate = (token: string) => {
+        // console.log('token', token);
+        // console.log("✏️ [Editor] Inserting token into editor:", token);
+      editor?.commands?.insertContent(token)
+    
+    //   console.log(editor?.getHTML());
+      }
+
     if(!editor){
         return null
     }
 
-    const onGenerate = (text: string) => {
-        editor?.commands.insertContent(text)
-      }
+   
 
   return (
     <div>
@@ -99,7 +105,7 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
                         to {to.join(', ')}
                     </span>
                 </div>
-                <AIComposeButton isComposing={defaultToolBarExpanded ?? false} onGenerate={onGenerate}/>
+                <AIComposeButton isComposing={defaultToolBarExpanded ?? true} onGenerate={onGenerate}/>
 
             </div>
             
@@ -120,7 +126,7 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
                 </span>
                 <Button className='cursor-pointer' onClick={async () => 
                     {
-                        editor?.commands?.clearContent()
+                        // editor?.commands?.clearContent()
                        await handleSend(value)
 
                     }} disabled={isSending}>
