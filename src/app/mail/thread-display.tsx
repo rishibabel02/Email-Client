@@ -103,7 +103,7 @@ const ThreadDisplay = () => {
                  <div className="flex-1"></div>
                  <Separator className='mt-auto'/>
                         {/* Reply Box */}
-                <ReplyBox/>
+                 <ReplyBox/>
             </div>
             </> : <>
                 <div className='p-8 text-center text-muted-foreground'> 

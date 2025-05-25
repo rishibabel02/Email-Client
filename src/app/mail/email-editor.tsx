@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import TagInputs from './tag-inputs'
 import { Input } from '@/components/ui/input'
 import AIComposeButton from './ai-compose-button'
+import { marked } from 'marked';
 
 
 type Props = {
@@ -48,20 +49,39 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
             }
         }
     })
+    // const editor = useEditor({
+    //     autofocus : false,
+    //     extensions: [StarterKit,CustomTest],
+    //     onUpdate: ({editor}) => {
+    //         setValue(editor.getHTML())
+    //     },
+    // })
     const editor = useEditor({
-        autofocus : false,
-        extensions: [StarterKit,CustomTest],
-        onUpdate: ({editor}) => {
-            setValue(editor.getHTML())
+        autofocus: false,
+        extensions: [StarterKit, CustomTest],
+        onUpdate: ({ editor }) => {
+          setValue(editor.getHTML())
+          console.log("Editor updated HTML:", editor.getHTML()) // Log final HTML
         },
-    })
+      })
 
-    const onGenerate = (token: string) => {
-        // console.log('token', token);
-        // console.log("✏️ [Editor] Inserting token into editor:", token);
-      editor?.commands?.insertContent(token)
+    marked.setOptions({
+        breaks: false, // Treat single newlines as <br> (optional, adjust based on needs)
+        gfm: true, // Use GitHub-flavored markdown
+      })
+
+      const onGenerate = (token: string) => {
+        // Convert markdown to HTML
+        const htmlContent = marked(token)
+        console.log("Raw Markdown in EmailEditor:", JSON.stringify(token)) // Log raw markdown
+        console.log("HTML Content from marked:", htmlContent) // Log HTML from marked
     
-    //   console.log(editor?.getHTML());
+        // Clear the editor to avoid extra wrapping
+        editor?.commands?.clearContent()
+        // Wrap the content in a div to prevent Tiptap from adding extra <p> tags
+        const wrappedContent = `<div>${htmlContent}</div>`
+        editor?.commands?.setContent(wrappedContent, false, { preserveWhitespace: true })
+        console.log("Editor HTML after setContent:", editor?.getHTML()) // Log Tiptap's HTML
       }
 
     if(!editor){
@@ -111,9 +131,22 @@ const EmailEditor = ({subject, setSubject, toValues, setToValues, ccValues, setC
             
         </div>
 
-        <div className='prose w-full px-4'>
-            <EditorContent editor={editor} value={value}/>
-        </div>
+        <div className='email-editor-content w-full px-4'>
+        <style jsx>{`
+          .email-editor-content p {
+            margin-bottom: 2em;
+            margin-top: 0;
+            line-height: 1.6;
+          }
+          .email-editor-content p:last-child {
+            margin-bottom: 0;
+          }
+          .email-editor-content div {
+            margin-bottom: 0;
+          }
+        `}</style>
+        <EditorContent editor={editor} value={value} />
+      </div>
 
         <Separator/>
         <div className="py-3 px-4 flex items-center justify-between">

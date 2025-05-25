@@ -3,6 +3,8 @@ import React from 'react'
 import EmailEditor from './email-editor'
 import { api, type RouterOutputs } from '@/trpc/react'
 import useThreads from '@/hooks/use-threads'
+// import TestOpenAIButton from './test-openai'
+import TestGeminiButton from './test-gemini'
 
 const ReplyBox = () => {
   const {threadId, accountId} = useThreads()
@@ -44,7 +46,8 @@ const Component = ({replyDetails} : {replyDetails : RouterOutputs['account']['ge
 
 
   return (
-    <EmailEditor
+    <div>
+      <EmailEditor
             toValues={toValues}
             setToValues={setToValues}
 
@@ -58,7 +61,11 @@ const Component = ({replyDetails} : {replyDetails : RouterOutputs['account']['ge
             to={replyDetails.to.map(to => to.address)}
             handleSend={handleSend}
             isSending={false}
-    />
+            />
+            
+            {/* <TestGeminiButton/> */}
+    </div>
+    
   )
 }
 
